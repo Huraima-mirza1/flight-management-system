@@ -1,12 +1,12 @@
-# Flight Management System Using Binary Search Tree (BST)
+** Flight Management System Using BST**
 
-## Project Description
+ **Project Overview**
 
-The **Flight Management System** is a C++ console-based application that manages airline flight records using a **Binary Search Tree (BST)**. Each flight is stored as a node, and the BST is organized by Flight ID.
+The Flight Management System is a C++ console application that manages flight records using a Binary Search Tree (BST). Each flight is stored as a node, and records are organized by Flight ID.
 
-The program helps an administrator add, search, delete, display, and manage flight information. It also provides simple flight-related features such as calculating estimated arrival times and finding the cheapest flight.
+The system allows the user to add, search, delete, and display flights. It can also calculate estimated arrival times, find the cheapest flight, and save or load flight records using a text file.
 
-## Flight Record Information
+## Flight Information
 
 Each flight record contains:
 
@@ -14,104 +14,57 @@ Each flight record contains:
 - Source
 - Destination
 - Airline
-- Departure time
-- Arrival time
-- Flight duration (in hours)
-- Ticket price
-- Flight status
+- Departure Time
+- Arrival Time
+- Flight Duration
+- Ticket Price
+- Flight Status
 
-Flight IDs must be unique. The program does not insert a flight if its ID already exists.
+Each Flight ID must be unique. Duplicate Flight IDs are not inserted.
 
-## Features
+## Main Features
 
-1. **Add Flight** – Enter a new flight record and add it to the BST.
-2. **Search Flight** – Find a flight using its Flight ID.
-3. **Delete Flight** – Delete a flight from the BST using its Flight ID.
-4. **Display Flights** – Display all flights in ascending order of Flight ID using inorder traversal.
-5. **Calculate ETA** – Calculate the estimated arrival time from the departure time and flight duration, then compare it with the scheduled arrival time. The result is shown as On-Time, Early, or Delayed.
-6. **Cheapest Flight** – Find and display the flight with the lowest ticket price.
-7. **Save Flights** – Save the current flight records to `flights.txt`.
-8. **Load Flights** – Load flight records from `flights.txt`. The program also attempts to load saved records automatically when it starts.
-9. **Exit** – Save the current records and close the program.
+1. **Add Flight:** Add a new flight record to the BST.
+2. **Search Flight:** Search for a flight using its Flight ID.
+3. **Delete Flight:** Remove a flight using its Flight ID.
+4. **Display Flights:** Display all flights in ascending order of Flight ID using inorder traversal.
+5. **Calculate ETA:** Calculate the estimated arrival time using the departure time and flight duration, then compare it with the scheduled arrival time.
+6. **Cheapest Flight:** Find and display the flight with the lowest ticket price.
+7. **Save Flights:** Save flight records to `flights.txt`.
+8. **Load Flights:** Load flight records from `flights.txt`. Saved records are also loaded automatically when the program starts.
 
-## Files in This Project
+## Project Files
 
-- `main.cpp` – The C++ source code.
-- `flights.txt` – Sample flight records used for testing and file storage.
-- `README.md` – Project description and instructions.
-
-## Requirements
-
-- A C++ compiler that supports **C++11 or later**, such as:
-  - GCC / MinGW
-  - Microsoft Visual Studio
-
-## How to Run
-
-### Using Visual Studio
-
-1. Open Visual Studio.
-2. Create or open a C++ Console App project.
-3. Add `main.cpp` to the project.
-4. Place `flights.txt` in the program's working directory so the program can read and update it.
-5. Build and run the project.
-
-### Using a terminal with g++
-
-1. Open a terminal in the project folder.
-2. Compile the program:
-
-   ```bash
-   g++ main.cpp -o FlightManagementSystem
-   ```
-
-3. Run it:
-
-   **Windows:**
-   ```bash
-   FlightManagementSystem.exe
-   ```
-
-   **Linux / macOS:**
-   ```bash
-   ./FlightManagementSystem
-   ```
-
-Keep `flights.txt` in the program's working directory. The program reads from and writes to a file with this name.
-
-## `flights.txt` Format
-
-Each line represents one flight. The fields are separated by commas and must appear in this order:
-
-```text
-FlightID,Source,Destination,Airline,DepartureTime,ArrivalTime,Duration,TicketPrice,Status
-```
-
-Example:
-
-```text
-101,Lahore,Karachi,PIA,09:30,11:15,1.75,18000,Scheduled
-102,Islamabad,Lahore,AirBlue,13:00,14:10,1.17,14500,Scheduled
-103,Karachi,Islamabad,SereneAir,18:20,20:15,1.92,21000,Delayed
-```
-
-Use the `HH:MM` format for departure and arrival times. Do not add extra commas inside a field because the program uses commas to separate the fields.
+- `main.cpp` – Contains the C++ source code and BST implementation.
+- `flights.txt` – Stores sample flight records and saved flight data.
+- `README.md` – Provides information about the project.
 
 ## Data Structure
 
-The project uses a **Binary Search Tree**:
+The project uses a Binary Search Tree based on Flight ID:
 
-- A flight with a smaller Flight ID is placed in the left subtree.
-- A flight with a larger Flight ID is placed in the right subtree.
+- Smaller Flight IDs are stored in the left subtree.
+- Larger Flight IDs are stored in the right subtree.
 - Duplicate Flight IDs are not allowed.
-- Inorder traversal displays the records in ascending Flight ID order.
+- Inorder traversal displays flights in ascending order of Flight ID.
 
-## Notes
+## Sample Flight File Format
 
-- The program saves records in `flights.txt` when a flight is added, deleted, when the Save option is selected, and when the program exits.
-- Keep a backup of `flights.txt` if you want to preserve a copy of your sample data.
-- Only use sample or non-private data in the repository.
+Flight records in `flights.txt` are stored in comma-separated format:
 
-## Author
 
-Student project – C++ Flight Management System using a Binary Search Tree (BST).
+FlightID,Source,Destination,Airline,DepartureTime,ArrivalTime,Duration,TicketPrice,Status
+
+
+Example:
+
+101,Lahore,Karachi,PIA,09:30,11:15,1.75,18000,Scheduled
+102,Islamabad,Lahore,AirBlue,13:00,14:10,1.17,14500,Scheduled
+103,Karachi,Islamabad,SereneAir,18:20,20:15,1.92,21000,Delayed
+
+
+## How to Run
+
+Open the project in Visual Studio and run the C++ program. Keep `flights.txt` in the program's working directory so the system can load and save flight records.
+
+**Project:** C++ Flight Management System using a Binary Search Tree (BST)
