@@ -1,11 +1,7 @@
-
 #include <iostream>
 #include <string>
 #include <fstream>
 #include <sstream>
-#include <iomanip>
-#include <cmath>
-#include <cctype>
 
 using namespace std;
 
@@ -15,111 +11,6 @@ int timeToMinutes(string time) {
     int minutes = stoi(time.substr(3, 2));
 
     return hours * 60 + minutes;
-}
-
-// Convert minutes into HH:MM format
-string minutesToTime(int totalMinutes) {
-    totalMinutes = totalMinutes % 1440;
-
-    int hours = totalMinutes / 60;
-    int minutes = totalMinutes % 60;
-
-    stringstream ss;
-    ss << setw(2) << setfill('0') << hours << ":"
-       << setw(2) << setfill('0') << minutes;
-
-    return ss.str();
-}
-
-// Convert entered time into HH:MM format
-string formatTime(string input) {
-
-    string digits = "";
-
-    // Accept HH:MM format
-    if (input.length() == 5) {
-
-        if (input[2] != ':') {
-            return "";
-        }
-
-        for (int i = 0; i < 5; i++) {
-
-            if (i == 2) {
-                continue;
-            }
-
-            if (!isdigit(input[i])) {
-                return "";
-            }
-
-            digits += input[i];
-        }
-    }
-
-    // Accept 3 or 4 digit format
-    else if (input.length() == 3 || input.length() == 4) {
-
-        for (int i = 0; i < input.length(); i++) {
-
-            if (!isdigit(input[i])) {
-                return "";
-            }
-
-            digits += input[i];
-        }
-    }
-    else {
-        return "";
-    }
-
-    int hours;
-    int minutes;
-
-    // Example: 115 becomes 01:15
-    if (digits.length() == 3) {
-        hours = digits[0] - '0';
-        minutes = stoi(digits.substr(1, 2));
-    }
-
-    // Example: 1115 becomes 11:15
-    else {
-        hours = stoi(digits.substr(0, 2));
-        minutes = stoi(digits.substr(2, 2));
-    }
-
-    // Check valid hours and minutes
-    if (hours > 23 || minutes > 59) {
-        return "";
-    }
-
-    stringstream ss;
-
-    ss << setw(2) << setfill('0') << hours << ":"
-       << setw(2) << setfill('0') << minutes;
-
-    return ss.str();
-}
-
-// Ask user for valid time
-string getValidTime(string message) {
-
-    string input;
-    string formattedTime;
-
-    while (true) {
-
-        cout << message;
-        getline(cin, input);
-
-        formattedTime = formatTime(input);
-
-        if (formattedTime != "") {
-            return formattedTime;
-        }
-
-        cout << "Invalid time! Enter a valid time such as 115, 930, 1115 or 11:15.\n";
-    }
 }
 
 // Node structure
@@ -349,36 +240,45 @@ public:
     }
 
     // Calculate ETA
+    int CalculateETA(string dep, double dur) {
+
+        int depMinutes = timeToMinutes(dep);
+        int durMinutes = dur * 60;
+        int totalminutes = depMinutes + durMinutes;
+        int totalhours = totalminutes / 60;
+        int remainingminutes = totalminutes % 60;
+
+        cout << "Expected Time of Arrival: "
+             << totalhours << ":" << remainingminutes << "\n";
+
+        return totalminutes;
+    }
+
+    // Calculate ETA for all flights
     void calculateETA(Node* x) {
 
         if (x != nullptr) {
 
             calculateETA(x->left);
 
-            int departure = timeToMinutes(x->departure_time);
-            int duration = round(x->flight_duration * 60);
-            int eta = departure + duration;
+            cout << "\nFlight ID: " << x->flightID << "\n";
 
+            int departure = timeToMinutes(x->departure_time);
+            int eta = CalculateETA(x->departure_time, x->flight_duration);
             int scheduledArrival = timeToMinutes(x->arrival_time);
 
-            // Handle flights arriving after midnight
             if (scheduledArrival < departure) {
                 scheduledArrival += 1440;
             }
 
-            cout << "\nFlight ID: " << x->flightID;
-
-            cout << "\nEstimated Arrival Time: "
-                 << minutesToTime(eta);
-
             if (eta == scheduledArrival) {
-                cout << "\nResult: On-Time\n";
+                cout << "Result: On-Time\n";
             }
             else if (eta < scheduledArrival) {
-                cout << "\nResult: Early\n";
+                cout << "Result: Early\n";
             }
             else {
-                cout << "\nResult: Delayed\n";
+                cout << "Result: Delayed\n";
             }
 
             calculateETA(x->right);
@@ -474,18 +374,6 @@ public:
         cout << "Flights saved successfully.\n";
     }
 
-    // Clear existing BST before reloading
-    void clearTree(Node* x) {
-
-        if (x != nullptr) {
-
-            clearTree(x->left);
-            clearTree(x->right);
-
-            delete x;
-        }
-    }
-
     // Load flights from file
     void loadFlights() {
 
@@ -495,10 +383,6 @@ public:
             cout << "Error opening flights.txt.\n";
             return;
         }
-
-        // Clear old BST before loading updated records
-        clearTree(root);
-        root = nullptr;
 
         string line;
         int count = 0;
@@ -520,11 +404,6 @@ public:
             getline(ss, price, ',');
             getline(ss, status);
 
-            // Handle Windows line endings
-            if (!status.empty() && status.back() == '\r') {
-                status.pop_back();
-            }
-
             // Skip incomplete records
             if (id.empty() || source.empty() || destination.empty() ||
                 airline.empty() || departure.empty() || arrival.empty() ||
@@ -540,7 +419,7 @@ public:
                 double flightDuration = stod(duration);
                 int ticketPrice = stoi(price);
 
-                // Prevent duplicate IDs inside the file
+                // Prevent duplicate IDs
                 if (search(flightID) == nullptr) {
 
                     insert(flightID, source, destination, airline,
@@ -563,7 +442,7 @@ public:
 
         file.close();
 
-        cout << count << " flights loaded successfully.\n";
+        cout << count << " new flights loaded successfully.\n";
     }
 };
 
@@ -618,14 +497,11 @@ int main() {
             cout << "Enter Airline: ";
             getline(cin, airline);
 
-            // Convert entered time into HH:MM format
-            departure = getValidTime(
-                "Enter Departure Time (e.g. 115, 930 or 11:15): "
-            );
+            cout << "Enter Departure Time (HH:MM): ";
+            getline(cin, departure);
 
-            arrival = getValidTime(
-                "Enter Arrival Time (e.g. 1115 or 11:15): "
-            );
+            cout << "Enter Arrival Time (HH:MM): ";
+            getline(cin, arrival);
 
             cout << "Enter Flight Duration in hours (e.g. 1.75): ";
             cin >> duration;
@@ -642,7 +518,6 @@ int main() {
                         departure, arrival, duration,
                         price, status);
 
-            // Save updated records
             tree.saveFlights();
 
             break;
@@ -675,7 +550,6 @@ int main() {
 
             tree.deleteNode(id);
 
-            // Update file after deletion
             tree.saveFlights();
 
             break;
